@@ -15,7 +15,20 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
-    "electron": "^29.1.4",
+    "electron": "^29.2.0",
     "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "productName": "Varmi Army - Clan Wars",
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
+      ]
+    }
   }
 }
