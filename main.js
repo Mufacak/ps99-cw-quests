@@ -5,8 +5,8 @@ let win;
 
 function createWindow () {
   win = new BrowserWindow({
-    width: 500,
-    height: 300,
+    width: 600,
+    height: 320,
     icon: path.join(__dirname, 'favicon.ico'),
     alwaysOnTop: true,
     frame: false,
@@ -30,7 +30,7 @@ ipcMain.on('close-window', () => {
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  //  if (process.platform !== 'darwin') {
     app.quit();
-  }
+  //  }
 });
