@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
     <title>VARMI ARMY</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap"
@@ -11,12 +12,10 @@
   <body>
     <div id="login">
       <form id="loginForm">
-        <input
-          type="text"
-          id="userId"
-          placeholder="Zadejte vaše uživatelské ID"
-          required
-        />
+      <label>Začni psát svůj nick v Robloxu:</label>
+      <br>
+      <input type="text" autoComplete="on" id="userId" list="dtlUsersIdSuggestions" required> 
+      <datalist id="dtlUsersIdSuggestions"></datalist>
         <div>
           <input
             type="radio"
@@ -36,7 +35,7 @@
     </div>
     <div id="container" style="display: none">
       <div class="title-bar">
-        VARMI ARMY
+        VARMI ARMY <span id="nickName"></span>
         <span class="close-btn" onclick="closeWindow()">X</span>
       </div>
       <p>

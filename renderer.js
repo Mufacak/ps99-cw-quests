@@ -52,12 +52,17 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
   const selectedClan = document.querySelector(
     'input[name="clanChoice"]:checked'
   ).value;
+
   localStorage.setItem("clan", selectedClan);
   localStorage.setItem("userId", userId);
   document.getElementById("login").style.display = "none";
   document.getElementById("container").style.display = "block";
+  
+  document.getElementById("nickName").innerText = " - @" + document.querySelector("#dtlUsersIdSuggestions option[value='"+userId+"']").innerText;
+
   fetchData();
 });
+
 
 const getUserId = () => {
   const storedId = localStorage.getItem("userId");
@@ -113,13 +118,19 @@ const findPlayerPosition = async() => {
   }
 }
 const fetchData = async() => {
+  const selectedClan = localStorage.getItem("clan");
+  const userId = getUserId();
+
+  if (selectedClan == '' || userId == 'udefaultId') {
+    return;
+  }
+
   const questMap = await fetchQuestMap();
   if (!questMap) {
     console.error("Quest map nebyla načtena.");
     return;
   }
-  const selectedClan = localStorage.getItem("clan");
-  const userId = getUserId();
+
   fetch(`https://biggamesapi.io/api/clan/${selectedClan}`)
     .then((response) => response.json())
     .then((data) => {
@@ -159,18 +170,75 @@ const fetchData = async() => {
       const now = new Date();
       const formattedDate = `${now.getDate()}. ${
         now.getMonth() + 1
-      }. ${now.getFullYear()} ${now.getHours()}:${now
-        .getMinutes()
-        .toString()
-        .padStart(2, "0")}`;
+      }. ${now.getFullYear()} ${now.getHours()}:${now.getMinutes().toString().padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
       document.getElementById("lastUpdated").innerText = `${formattedDate}`;
     })
     .catch((error) => console.error("Error fetching data:", error));
 }
 
+const updateUsersSelectBox  = async() => {
+  console.log('updateUsersSelectBox');
+  
+  try {
+    const selectedClan = document.querySelector(
+      'input[name="clanChoice"]:checked'
+    ).value;
+
+    const response = await fetch(
+      `https://clan.varmi.cz/api/${selectedClan}/leaderboard`
+    );
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    let members = await response.json();
+
+    let dtlUsersId = document.getElementById("dtlUsersIdSuggestions");
+    let userId = document.getElementById("userId");
+
+    dtlUsersId.innerHTML = '';
+    userId.value = '';
+
+    members = members.sort((a, b) => {
+      if (a.nick < b.nick) {
+        return -1;
+      }
+    });
+
+    for (let key in members) {
+      let option = document.createElement("option");
+
+      option.innerText = members[key]['nick'];
+      option.value = members[key]['robloxId'];
+
+      dtlUsersId.append(option);
+    }
+  } catch (error) {
+    console.error("Chyba při aktualizaci seznamu hráčů: ", error);
+  }
+}
+
+document.body.addEventListener('click', function(e) {
+  var target = e.target;
+  
+  if (target.nodeName.toUpperCase() === 'INPUT' && target.type.toUpperCase() == 'RADIO') {
+    localStorage.setItem("clan", target.value);
+
+    updateUsersSelectBox();
+  }
+  
+  e.stopPropagation()
+});
+
 const closeWindow = () => {
   window.api.closeWindow();
 }
 
-fetchData();
-setInterval(fetchData, 2000);
+document.addEventListener("DOMContentLoaded", (event) => {
+    localStorage.clear();
+    
+    updateUsersSelectBox(); 
+
+    setInterval(fetchData, 2000);
+})
