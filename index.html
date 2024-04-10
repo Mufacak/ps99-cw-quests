@@ -1,63 +1,58 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>VARMI ARMY</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div id="login">
-      <form id="loginForm">
-      <label>Začni psát svůj nick v Robloxu:</label>
-      <br>
-      <input type="text" autoComplete="on" id="userId" list="dtlUsersIdSuggestions" required> 
-      <datalist id="dtlUsersIdSuggestions"></datalist>
-        <div>
-          <input
-            type="radio"
-            id="clanVLP"
-            name="clanChoice"
-            value="VLP"
-            checked
-          />
-          <label for="clanVLP">VLP</label>
-        </div>
-        <div>
-          <input type="radio" id="clanVLP2" name="clanChoice" value="VLP2" />
-          <label for="clanVLP2">VLP2</label>
-        </div>
-        <button type="submit">Odeslat</button>
-      </form>
-    </div>
-    <div id="container" style="display: none">
-      <div class="title-bar">
-        VARMI ARMY <span id="nickName"></span>
-        <span class="close-btn" onclick="closeWindow()">X</span>
+
+<head>
+  <meta charset="UTF-8">
+  <title>VARMI ARMY</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div id="login">
+    <div class="logoContainer mb-3"><img class="logo" src="./favicon.ico"></div>
+    <form id="loginForm">
+      <div class="mb-3">
+        <label>Začni psát svůj nick v Robloxu:</label>
+        <br>
+        <input type="text" autoComplete="on" id="userId" list="dtlUsersIdSuggestions" size="30" required>
+        <datalist id="dtlUsersIdSuggestions"></datalist>
       </div>
-      <p>
-        <strong>My Points:</strong> <span id="userPoints"></span> |
-        <strong>Rank:</strong> <span id="userPosition"></span
-        ><span id="userPointsAll"></span><strong>Clan Points:</strong>
-        <span id="clanPoints"></span> | <strong>Rank:</strong
-        ><span id="clanRank"></span>
-      </p>
-      <p><strong>Aktualizováno:</strong> <span id="lastUpdated"></span></p>
-      <table>
-        <thead>
-          <tr>
-            <th>Quest</th>
-            <th>Progress</th>
-            <th>Me</th>
-            <th>Players</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
-      <script src="renderer.js"></script>
+      <div class="mb-1">
+        <input type="radio" id="clanVLP" name="clanChoice" value="VLP" checked />
+        <label for="clanVLP">VLP</label>
+      </div>
+      <div class="mb-3">
+        <input type="radio" id="clanVLP2" name="clanChoice" value="VLP2" />
+        <label for="clanVLP2">VLP2</label>
+      </div>
+      <button type="submit">Přihlásit</button>
+    </form>
+  </div>
+  <div id="container" style="display: none">
+    <div class="title-bar">
+      VARMI ARMY <span id="nickName"></span>
+      <span class="close-btn" onclick="closeWindow()">X</span>
     </div>
-  </body>
+    <p>
+      <strong>My Points:</strong> <span id="userPoints"></span> |
+      <strong>Rank:</strong> <span id="userPosition"></span><span id="userPointsAll"></span><strong>Clan Points:</strong>
+      <span id="clanPoints"></span> | <strong>Rank:</strong><span id="clanRank"></span>
+    </p>
+    <p><strong>Aktualizováno:</strong> <span id="lastUpdated"></span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Quest</th>
+          <th>Progress</th>
+          <th>Me</th>
+          <th>Players</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <script src="renderer.js"></script>
+  </div>
+</body>
+
 </html>

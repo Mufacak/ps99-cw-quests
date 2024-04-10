@@ -58,11 +58,31 @@ body {
     font-weight: 600;
   }
 
+  .mb-1 {
+    margin-bottom: 0.25rem;
+  }
+
+  .mb-2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .mb-3 {
+    margin-bottom: 1rem;
+  }
+
   .header-text {
     font-weight: 600;
     font-size: 0.2rem;
   }
   
+  .logoContainer {
+    text-align: center;
+  }
+
+  .logo {
+    width: 50px;
+  }
+
   /* Google Fonts Link */
   @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap');
   
