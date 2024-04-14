@@ -78,7 +78,9 @@ function fetchClanPosition() {
     .then((data) => {
       const clans = data.data;
       const vlpClanIndex = clans.findIndex((clan) => clan.Name === "VLP") + 1;
-      document.getElementById("clanRank").innerText = ` ${vlpClanIndex}`;
+      const vlpClanIndex2 = clans.findIndex((clan) => clan.Name === "VLP2") + 1;
+      document.getElementById("clanRank").innerText = ` ${vlpClanIndex}/`;
+      document.getElementById("clanRank2").innerText = `${vlpClanIndex2}`;
     })
     .catch((error) => console.error("Chyba při načítání clan pozice:", error));
 }
@@ -133,36 +135,31 @@ const fetchData = async() => {
 
   fetch(`https://biggamesapi.io/api/clan/${selectedClan}`)
     .then((response) => response.json())
-    .then((data) => {
+    .then(async (data) => {
       const clanPoints = data.data.Battles.GoalBattleTwo.Points;
-      document.getElementById("clanPoints").innerText = `${formatNumber(
-        clanPoints
-      )}`;
+      document.getElementById("clanPoints").innerText = `${formatNumber(clanPoints)}`;
 
       const goals = data.data.Battles.GoalBattleTwo.Goals;
       const tableBody = document.getElementById("tableBody");
       tableBody.innerHTML = "";
 
-      goals.forEach((goal) => {
+      for (const goal of goals) {
         let userContributions = goal.Contributions[userId] || "0";
 
-        let uniqueContributorsCount =
-          Object.keys(goal.Contributions).length || 0;
+        let uniqueContributorsCount = Object.keys(goal.Contributions).length || 0;
         let calc = userContributions / goal.Amount;
         let calc2 = Math.round(calc * goal.Stars);
 
-        const row = `<tr>
-          <td>${
-            questMap[goal.Type]
-              ? questMap[goal.Type]
-              : `CHYBĚJÍCÍ QUEST: ${goal.Type}`
-          }</td>
-            <td>${goal.Progress}/${goal.Amount}</td>
-            <td>${userContributions} [${calc2} ★]</td>
-            <td>${uniqueContributorsCount}</td> 
-          </tr>`;
-        tableBody.innerHTML += row;
-      });
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${questMap[goal.Type] ? questMap[goal.Type] : `CHYBĚJÍCÍ QUEST: ${goal.Type}`}</td>
+          <td>${goal.Progress}/${goal.Amount}</td>
+          <td>${userContributions} [${calc2} ★]</td>
+          <td>${uniqueContributorsCount}</td>
+        `;
+        row.onclick = () => showPlayerDetails(goal.Contributions);
+        tableBody.appendChild(row);
+      }
 
       fetchClanPosition();
       findPlayerPosition();
@@ -175,6 +172,99 @@ const fetchData = async() => {
     })
     .catch((error) => console.error("Error fetching data:", error));
 }
+
+async function showPlayerDetails(contributions) {
+  const mainContent = document.getElementById('container');
+  const detailContent = document.createElement('div');
+  detailContent.id = 'playerDetails';
+
+  const backButton = document.createElement('button');
+  backButton.id = 'backButton';
+  backButton.textContent = 'Zpět';
+  backButton.onclick = () => {
+    detailContent.remove();
+    mainContent.style.display = 'block';
+  };
+
+  const playerList = document.createElement('ul');
+
+  try {
+    const allPlayers = await fetch('https://clan.varmi.cz/api/all/leaderboard').then(res => res.json());
+
+    const playerContributions = allPlayers.reduce((acc, player) => {
+      const userId = `u${player.robloxId}`;
+      if (contributions[userId]) {
+        acc.push({ nick: player.nick, contribution: contributions[userId] });
+      }
+      return acc;
+    }, []);
+
+    playerContributions.sort((a, b) => b.contribution - a.contribution);
+
+    playerContributions.forEach(({ nick, contribution }) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="nickname">${nick}</span> - [Progress: ${contribution}]`;
+      playerList.appendChild(li);
+    });
+  } catch (error) {
+    console.error("Error loading player details: ", error);
+    const li = document.createElement('li');
+    li.textContent = 'Nepodařilo se načíst detaily hráčů.';
+    playerList.appendChild(li);
+  }
+
+  detailContent.appendChild(backButton);
+  detailContent.appendChild(playerList);
+
+  mainContent.parentNode.insertBefore(detailContent, mainContent);
+  mainContent.style.display = 'none';
+}
+
+
+async function showPlayerRankDetails() {
+  const mainContent = document.getElementById('container');
+  const detailContent = document.createElement('div');
+  detailContent.id = 'playerRankDetails';
+
+  const backButton = document.createElement('button');
+  backButton.id = 'backButton';
+  backButton.textContent = 'Zpět';
+  backButton.onclick = () => {
+    detailContent.remove();
+    mainContent.style.display = 'block';
+  };
+
+  detailContent.appendChild(backButton);
+
+  const playerList = document.createElement('ul');
+
+  try {
+    const allPlayers = await fetch('https://clan.varmi.cz/api/all/leaderboard').then(res => res.json());
+
+
+    allPlayers.sort((a, b) => a.position - b.position);
+
+
+    allPlayers.forEach(player => {
+      const li = document.createElement('li');
+      li.innerHTML = `${player.position}. ${player.nick} (${player.clan}) - [${formatNumber(player.clanPoints)}]`;
+      playerList.appendChild(li);
+    });
+  } catch (error) {
+    console.error("Error loading player rank details: ", error);
+    const li = document.createElement('li');
+    li.textContent = 'Nepodařilo se načíst detaily hráčů.';
+    playerList.appendChild(li);
+  }
+
+  detailContent.appendChild(playerList);
+
+  mainContent.parentNode.insertBefore(detailContent, mainContent);
+  mainContent.style.display = 'none';
+}
+
+document.getElementById("userPosition").addEventListener('click', showPlayerRankDetails);
+document.getElementById("userPointsAll").addEventListener('click', showPlayerRankDetails);
 
 const updateUsersSelectBox  = async() => {
   console.log('updateUsersSelectBox');
