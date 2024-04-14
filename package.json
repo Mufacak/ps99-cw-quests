@@ -1,6 +1,6 @@
 {
   "name": "clanapi",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "CW - Quests",
   "main": "main.js",
   "scripts": {
@@ -12,11 +12,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@electron/asar": "^3.2.9",
     "path": "^0.12.7"
   },
   "devDependencies": {
-    "electron": "^29.2.0",
+    "electron": "^29.1.4",
     "electron-builder": "^24.13.3"
   },
   "build": {
