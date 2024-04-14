@@ -79,7 +79,7 @@ function fetchClanPosition() {
       const clans = data.data;
       const vlpClanIndex = clans.findIndex((clan) => clan.Name === "VLP") + 1;
       const vlpClanIndex2 = clans.findIndex((clan) => clan.Name === "VLP2") + 1;
-      document.getElementById("clanRank").innerText = ` ${vlpClanIndex}/`;
+      document.getElementById("clanRank").innerText = `${vlpClanIndex}`;
       document.getElementById("clanRank2").innerText = `${vlpClanIndex2}`;
     })
     .catch((error) => console.error("Chyba při načítání clan pozice:", error));
@@ -107,8 +107,7 @@ const findPlayerPosition = async() => {
       let points = player.clanPoints;
       let bothClanPosition = player.allPosition;
       document.getElementById("userPosition").innerText = `${position}` || 0;
-      document.getElementById("userPointsAll").innerText =
-        `/${bothClanPosition}   ||   ` || 0;
+      document.getElementById("userPointsAll").innerText = `${bothClanPosition}` || 0;
       document.getElementById("userPoints").innerText = `${points}` || 0;
       return player.position;
     } else {
@@ -153,11 +152,14 @@ const fetchData = async() => {
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>${questMap[goal.Type] ? questMap[goal.Type] : `CHYBĚJÍCÍ QUEST: ${goal.Type}`}</td>
-          <td>${goal.Progress}/${goal.Amount}</td>
-          <td>${userContributions} [${calc2} ★]</td>
+          <td>${goal.Progress}&nbsp;/&nbsp;${goal.Amount}</td>
+          <td>${userContributions}&nbsp;[${calc2}&nbsp;★]</td>
           <td>${uniqueContributorsCount}</td>
         `;
         row.onclick = () => showPlayerDetails(goal.Contributions);
+        if (userContributions == 0) {
+          row.classList.add("hiliItemNoParticipation");
+        }
         tableBody.appendChild(row);
       }
 
@@ -194,16 +196,19 @@ async function showPlayerDetails(contributions) {
     const playerContributions = allPlayers.reduce((acc, player) => {
       const userId = `u${player.robloxId}`;
       if (contributions[userId]) {
-        acc.push({ nick: player.nick, contribution: contributions[userId] });
+        acc.push({ nick: player.nick, contribution: contributions[userId], robloxId: player.robloxId });
       }
       return acc;
     }, []);
 
     playerContributions.sort((a, b) => b.contribution - a.contribution);
 
-    playerContributions.forEach(({ nick, contribution }) => {
+    playerContributions.forEach(({ nick, contribution, robloxId }) => {
       const li = document.createElement('li');
       li.innerHTML = `<span class="nickname">${nick}</span> - [Progress: ${contribution}]`;
+      if (localStorage.getItem('userId') == robloxId) {
+        li.classList.add("hiliItem");
+      }
       playerList.appendChild(li);
     });
   } catch (error) {
@@ -221,7 +226,8 @@ async function showPlayerDetails(contributions) {
 }
 
 
-async function showPlayerRankDetails() {
+async function showPlayerRankDetails(clan = '') {
+  console.log('showPlayerRankDetails', clan);
   const mainContent = document.getElementById('container');
   const detailContent = document.createElement('div');
   detailContent.id = 'playerRankDetails';
@@ -236,7 +242,7 @@ async function showPlayerRankDetails() {
 
   detailContent.appendChild(backButton);
 
-  const playerList = document.createElement('ul');
+  const playerList = document.createElement('ol');
 
   try {
     const allPlayers = await fetch('https://clan.varmi.cz/api/all/leaderboard').then(res => res.json());
@@ -244,11 +250,26 @@ async function showPlayerRankDetails() {
 
     allPlayers.sort((a, b) => a.position - b.position);
 
-
+    let lastPoint = 0;
+    
     allPlayers.forEach(player => {
+      console.log(clan, player)
+      if (clan && clan.toUpperCase() != player.clan.toUpperCase()) {
+        return;
+      }
+
+      let missingPoints = lastPoint - player.clanPoints < 0 ? 0 : lastPoint - player.clanPoints;
+
       const li = document.createElement('li');
-      li.innerHTML = `${player.position}. ${player.nick} (${player.clan}) - [${formatNumber(player.clanPoints)}]`;
+      li.innerHTML = `${player.nick} (${player.clan}) - [${formatNumber(player.clanPoints)}] - [↑&nbsp;${missingPoints}]`;
+
+      if (localStorage.getItem('userId') == player.robloxId) {
+        li.classList.add("hiliItem");
+      }
+
       playerList.appendChild(li);
+
+      lastPoint = player.clanPoints;
     });
   } catch (error) {
     console.error("Error loading player rank details: ", error);
@@ -263,8 +284,8 @@ async function showPlayerRankDetails() {
   mainContent.style.display = 'none';
 }
 
-document.getElementById("userPosition").addEventListener('click', showPlayerRankDetails);
-document.getElementById("userPointsAll").addEventListener('click', showPlayerRankDetails);
+document.getElementById("userPosition").addEventListener('click', (evt) => showPlayerRankDetails(localStorage.getItem("clan")));
+document.getElementById("userPointsAll").addEventListener('click', (evt) => showPlayerRankDetails(''));
 
 const updateUsersSelectBox  = async() => {
   console.log('updateUsersSelectBox');

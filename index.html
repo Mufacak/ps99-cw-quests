@@ -11,22 +11,19 @@
   </head>
   <body>
     <div id="login">
+      <div class="logoContainer mb-3"><img class="logo" src="./favicon.ico"></div>
       <form id="loginForm">
-      <label>Začni psát svůj nick v Robloxu:</label>
-      <br>
-      <input type="text" autoComplete="on" id="userId" list="dtlUsersIdSuggestions" required> 
-      <datalist id="dtlUsersIdSuggestions"></datalist>
-        <div>
-          <input
-            type="radio"
-            id="clanVLP"
-            name="clanChoice"
-            value="VLP"
-            checked
-          />
-          <label for="clanVLP">VLP</label>
+        <div class="mb-2">
+          <label>Začni psát svůj nick v Robloxu:</label>
+          <br>
+          <input type="text" autoComplete="on" id="userId" list="dtlUsersIdSuggestions" size="30" autofocus required> 
+          <datalist id="dtlUsersIdSuggestions"></datalist>
         </div>
         <div>
+          <input type="radio" id="clanVLP" name="clanChoice" value="VLP" checked />
+          <label for="clanVLP">VLP</label>
+        </div>
+        <div class="mb-2">
           <input type="radio" id="clanVLP2" name="clanChoice" value="VLP2" />
           <label for="clanVLP2">VLP2</label>
         </div>
@@ -39,11 +36,10 @@
         <span class="close-btn" onclick="closeWindow()">X</span>
       </div>
       <p>
-        <strong>My Points:</strong> <span id="userPoints"></span> |
-        <strong>Rank:</strong> <span id="userPosition"></span
-        ><span id="userPointsAll"></span><strong>Clan Points:</strong>
-        <span id="clanPoints"></span> | <strong>Rank:</strong
-        ><span id="clanRank"></span><span id="clanRank2"></span>
+        <strong>My Points:</strong> <span id="userPoints"></span>&nbsp;|&nbsp;
+        <strong>Rank:</strong> <span id="userPosition" title="Jak si stojíš v klanu?"></span>&nbsp;/&nbsp;<span id="userPointsAll" title="Jak si stojíš celkově za VLP i VLP2?"></span>&nbsp;&nbsp;||&nbsp;&nbsp;
+        <strong>Clan Points:</strong> <span id="clanPoints"></span>&nbsp;|&nbsp; 
+        <strong>Rank:</strong> <span id="clanRank"></span>&nbsp;/&nbsp;<span id="clanRank2"></span>
       </p>
       <p><strong>Aktualizováno:</strong> <span id="lastUpdated"></span></p>
       <table>
