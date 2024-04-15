@@ -253,7 +253,6 @@ async function showPlayerRankDetails(clan = '') {
     let lastPoint = 0;
     
     allPlayers.forEach(player => {
-      console.log(clan, player)
       if (clan && clan.toUpperCase() != player.clan.toUpperCase()) {
         return;
       }
@@ -353,8 +352,6 @@ document.getElementById("clanRank").addEventListener('click', showClanRankDetail
 document.getElementById("clanRank2").addEventListener('click', showClanRankDetails);
 
 const updateUsersSelectBox  = async() => {
-  console.log('updateUsersSelectBox');
-  
   try {
     const selectedClan = document.querySelector(
       'input[name="clanChoice"]:checked'
