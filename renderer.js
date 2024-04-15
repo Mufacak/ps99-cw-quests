@@ -284,8 +284,73 @@ async function showPlayerRankDetails(clan = '') {
   mainContent.style.display = 'none';
 }
 
+async function showClanRankDetails() {
+  const mainContent = document.getElementById('container');
+  const detailContent = document.createElement('div');
+  detailContent.id = 'playerRankDetails';
+
+  const backButton = document.createElement('button');
+  backButton.id = 'backButton';
+  backButton.textContent = 'Zpět';
+  backButton.onclick = () => {
+    detailContent.remove();
+    mainContent.style.display = 'block';
+  };
+
+  detailContent.appendChild(backButton);
+
+  const clanList = document.createElement('ol');
+
+  try {
+    const topClans = await fetch('https://biggamesapi.io/api/clans?page=1&pageSize=100&sort=Points&sortOrder=desc').then(res => res.json().then((data => data.data)));
+
+    let lastPoint = 0;
+    let top1Point = topClans[0]['Points'];
+    let top10Point = topClans[9]['Points'];
+    let top50Point = topClans[49]['Points'];
+    
+    topClans.forEach(clan => {
+      let missingPoints = lastPoint - clan.Points < 0 ? 0 : lastPoint - clan.Points;
+
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${clan.Name}</strong> - [${clan.CountryCode} / ${clan.Members}] - [${formatNumber(clan.Points)}] - [↑&nbsp;${formatNumber(missingPoints)}]`;
+
+      if (clan.Name.toUpperCase() == 'VLP' || clan.Name.toUpperCase() == 'VLP2') {
+        const targets = [{pos: 1, points: top1Point}, {pos: 10, points: top10Point}, {pos: 50, points: top50Point}];
+        const pointsToText = targets.reduce((text, target) => (
+          target.points > clan.Points ? `[↑T${target.pos}&nbsp;${formatNumber(target.points - clan.Points)}]` : text
+        ), '');
+        
+        li.innerHTML += ' - ' + pointsToText;
+
+        li.classList.add("hiliItem");
+      } else {
+        if (clan.CountryCode == 'CZ') {
+          li.classList.add("hiliItemCountry");
+        }
+      }
+
+      clanList.appendChild(li);
+
+      lastPoint = clan.Points;
+    });
+  } catch (error) {
+    console.error("Error loading clan rank details: ", error);
+    const li = document.createElement('li');
+    li.textContent = 'Nepodařilo se načíst seznam klanů.';
+    clanList.appendChild(li);
+  }
+
+  detailContent.appendChild(clanList);
+
+  mainContent.parentNode.insertBefore(detailContent, mainContent);
+  mainContent.style.display = 'none';
+}
+
 document.getElementById("userPosition").addEventListener('click', (evt) => showPlayerRankDetails(localStorage.getItem("clan")));
 document.getElementById("userPointsAll").addEventListener('click', (evt) => showPlayerRankDetails(''));
+document.getElementById("clanRank").addEventListener('click', showClanRankDetails);
+document.getElementById("clanRank2").addEventListener('click', showClanRankDetails);
 
 const updateUsersSelectBox  = async() => {
   console.log('updateUsersSelectBox');

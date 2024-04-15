@@ -81,6 +81,12 @@ td:hover {
   color: rgba(255, 166, 0, 0.9);
 }
 
+.hiliItemCountry {
+  background: linear-gradient(180deg, #ffffff, #0000FF, #ff0000);
+  background-clip: text;
+  color: transparent;
+}
+
 .mb-1 {
   margin-bottom: 0.25rem;
 }
@@ -169,7 +175,11 @@ td:hover {
   -ms-overflow-style: none;
 }
 
-#userPosition:hover, #userPointsAll:hover {
+#playerRankDetails li::marker {
+  color: #efefef;
+}
+
+#userPosition:hover, #userPointsAll:hover, #clanRank:hover, #clanRank2:hover {
   cursor: pointer;
   background-image: linear-gradient(#6745ed, #DD39FD);
   background-clip: text;
