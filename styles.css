@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap');
+
 body {
   font-family: 'Baloo 2', sans-serif;
   background-color: rgba(0, 0, 0, 0.7);
@@ -185,5 +187,3 @@ td:hover {
   background-clip: text;
   color: transparent;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap');
