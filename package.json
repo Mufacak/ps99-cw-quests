@@ -1,6 +1,6 @@
 {
   "name": "clanapi",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "CW - Quests",
   "main": "main.js",
   "scripts": {
@@ -20,6 +20,7 @@
   },
   "build": {
     "productName": "Varmi Army - Clan Wars",
+    "appId": "cz.varmi.clanapi",
     "mac": {
       "target": [
         {
@@ -29,6 +30,10 @@
           ]
         }
       ]
+    },
+    "win" : {
+      "target": ["nsis", "zip"],
+      "icon": "build/icon.ico"
     }
   }
 }
