@@ -5,7 +5,7 @@ let win;
 
 function createWindow () {
   win = new BrowserWindow({
-    width: 500,
+    width: 530,
     height: 300,
     icon: path.join(__dirname, 'favicon.ico'),
     alwaysOnTop: true,
