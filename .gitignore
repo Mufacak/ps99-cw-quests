@@ -10,10 +10,10 @@ node_modules/
 
 # Produkční soubory
 /dist
-/build
 
 # Logy
 *.log
 
 # Systémové soubory
 .env
+package-lock.json
