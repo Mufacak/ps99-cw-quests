@@ -1,4 +1,4 @@
-const fetchQuestMap = async() => {
+const fetchQuestMap = async () => {
   try {
     const response = await fetch("https://clan.varmi.cz/api/questmap");
     if (!response.ok) {
@@ -57,8 +57,8 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
   localStorage.setItem("userId", userId);
   document.getElementById("login").style.display = "none";
   document.getElementById("container").style.display = "block";
-  
-  document.getElementById("nickName").innerText = " - @" + document.querySelector("#dtlUsersIdSuggestions option[value='"+userId+"']").innerText;
+
+  document.getElementById("nickName").innerText = " - @" + document.querySelector("#dtlUsersIdSuggestions option[value='" + userId + "']").innerText;
 
   fetchData();
 });
@@ -85,7 +85,7 @@ function fetchClanPosition() {
     .catch((error) => console.error("Chyba při načítání clan pozice:", error));
 }
 
-const findPlayerPosition = async() => {
+const findPlayerPosition = async () => {
   try {
     const selectedClan = localStorage.getItem("clan");
     const response = await fetch(
@@ -118,7 +118,7 @@ const findPlayerPosition = async() => {
     console.error("Chyba při hledání hráče: ", error);
   }
 }
-const fetchData = async() => {
+const fetchData = async () => {
   const selectedClan = localStorage.getItem("clan");
   const userId = getUserId();
 
@@ -129,7 +129,12 @@ const fetchData = async() => {
   const questMap = await fetchQuestMap();
   if (!questMap) {
     console.error("Quest map nebyla načtena.");
+
+    document.getElementById("alertMsg").innerText = 'Asi nejede net?';
+    document.getElementById("alertMsg").style.display = 'inline';
     return;
+  } else {
+    document.getElementById("alertMsg").style.display = 'none';
   }
 
   fetch(`https://biggamesapi.io/api/clan/${selectedClan}`)
@@ -167,9 +172,8 @@ const fetchData = async() => {
       findPlayerPosition();
 
       const now = new Date();
-      const formattedDate = `${now.getDate()}. ${
-        now.getMonth() + 1
-      }. ${now.getFullYear()} ${now.getHours()}:${now.getMinutes().toString().padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
+      const formattedDate = `${now.getDate()}. ${now.getMonth() + 1
+        }. ${now.getFullYear()} ${now.getHours()}:${now.getMinutes().toString().padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
       document.getElementById("lastUpdated").innerText = `${formattedDate}`;
     })
     .catch((error) => console.error("Error fetching data:", error));
@@ -182,6 +186,7 @@ async function showPlayerDetails(contributions) {
 
   const backButton = document.createElement('button');
   backButton.id = 'backButton';
+  backButton.classList.add('button');
   backButton.textContent = 'Zpět';
   backButton.onclick = () => {
     detailContent.remove();
@@ -211,6 +216,12 @@ async function showPlayerDetails(contributions) {
       }
       playerList.appendChild(li);
     });
+
+    if (playerContributions.length == 0) {
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>Nikde nikdo. Necheš máknout? :-)</strong>';
+      playerList.appendChild(li);
+    }
   } catch (error) {
     console.error("Error loading player details: ", error);
     const li = document.createElement('li');
@@ -234,6 +245,7 @@ async function showPlayerRankDetails(clan = '') {
 
   const backButton = document.createElement('button');
   backButton.id = 'backButton';
+  backButton.classList.add('button');
   backButton.textContent = 'Zpět';
   backButton.onclick = () => {
     detailContent.remove();
@@ -251,7 +263,7 @@ async function showPlayerRankDetails(clan = '') {
     allPlayers.sort((a, b) => a.position - b.position);
 
     let lastPoint = 0;
-    
+
     allPlayers.forEach(player => {
       if (clan && clan.toUpperCase() != player.clan.toUpperCase()) {
         return;
@@ -290,6 +302,7 @@ async function showClanRankDetails() {
 
   const backButton = document.createElement('button');
   backButton.id = 'backButton';
+  backButton.classList.add('button');
   backButton.textContent = 'Zpět';
   backButton.onclick = () => {
     detailContent.remove();
@@ -307,7 +320,7 @@ async function showClanRankDetails() {
     let top1Point = topClans[0]['Points'];
     let top10Point = topClans[9]['Points'];
     let top50Point = topClans[49]['Points'];
-    
+
     topClans.forEach(clan => {
       let missingPoints = lastPoint - clan.Points < 0 ? 0 : lastPoint - clan.Points;
 
@@ -315,14 +328,15 @@ async function showClanRankDetails() {
       li.innerHTML = `<strong>${clan.Name}</strong> - [${clan.CountryCode} / ${clan.Members}] - [${formatNumber(clan.Points)}] - [↑&nbsp;${formatNumber(missingPoints)}]`;
 
       if (clan.Name.toUpperCase() == 'VLP' || clan.Name.toUpperCase() == 'VLP2') {
-        const targets = [{pos: 1, points: top1Point}, {pos: 10, points: top10Point}, {pos: 50, points: top50Point}];
+        const targets = [{ pos: 1, points: top1Point }, { pos: 10, points: top10Point }, { pos: 50, points: top50Point }];
         const pointsToText = targets.reduce((text, target) => (
           target.points > clan.Points ? `[↑T${target.pos}&nbsp;${formatNumber(target.points - clan.Points)}]` : text
         ), '');
-        
+
         li.innerHTML += ' - ' + pointsToText;
 
         li.classList.add("hiliItem");
+        li.id = clan.Name.toUpperCase();
       } else {
         if (clan.CountryCode == 'CZ') {
           li.classList.add("hiliItemCountry");
@@ -351,7 +365,7 @@ document.getElementById("userPointsAll").addEventListener('click', (evt) => show
 document.getElementById("clanRank").addEventListener('click', showClanRankDetails);
 document.getElementById("clanRank2").addEventListener('click', showClanRankDetails);
 
-const updateUsersSelectBox  = async() => {
+const updateUsersSelectBox = async () => {
   try {
     const selectedClan = document.querySelector(
       'input[name="clanChoice"]:checked'
@@ -392,15 +406,15 @@ const updateUsersSelectBox  = async() => {
   }
 }
 
-document.body.addEventListener('click', function(e) {
+document.body.addEventListener('click', function (e) {
   var target = e.target;
-  
+
   if (target.nodeName.toUpperCase() === 'INPUT' && target.type.toUpperCase() == 'RADIO') {
     localStorage.setItem("clan", target.value);
 
     updateUsersSelectBox();
   }
-  
+
   e.stopPropagation()
 });
 
@@ -409,9 +423,9 @@ const closeWindow = () => {
 }
 
 document.addEventListener("DOMContentLoaded", (event) => {
-    localStorage.clear();
-    
-    updateUsersSelectBox(); 
+  localStorage.clear();
 
-    setInterval(fetchData, 2000);
+  updateUsersSelectBox();
+
+  setInterval(fetchData, 2000);
 })
