@@ -11,7 +11,7 @@
   </head>
   <body>
     <div id="login">
-      <div class="logoContainer mb-3"><img class="logo" src="./favicon.ico"></div>
+      <div class="logoContainer mb-1"><img class="logo" src="./icon-varmiarmy.png"></div>
       <form id="loginForm">
         <div class="mb-2">
           <label>Začni psát svůj nick v Robloxu:</label>
@@ -27,21 +27,24 @@
           <input type="radio" id="clanVLP2" name="clanChoice" value="VLP2" />
           <label for="clanVLP2">VLP2</label>
         </div>
-        <button type="submit">Odeslat</button>
+        <div>
+          <button type="submit" class="button">Odeslat</button>
+        </div>
       </form>
     </div>
     <div id="container" style="display: none">
       <div class="title-bar">
         VARMI ARMY <span id="nickName"></span>
-        <span class="close-btn" onclick="closeWindow()">X</span>
+        <span class="close-btn tooltip left" data-text="No dobře, končíme :-)" onclick="closeWindow()">X</span>
       </div>
       <p>
-        <strong>My Points:</strong> <span id="userPoints"></span>&nbsp;|&nbsp;
-        <strong>Rank:</strong> <span id="userPosition" title="Jak si stojíš v klanu?"></span>&nbsp;/&nbsp;<span id="userPointsAll" title="Jak si stojíš celkově za VLP i VLP2?"></span>&nbsp;&nbsp;||&nbsp;&nbsp;
-        <strong>Clan Points:</strong> <span id="clanPoints"></span>&nbsp;|&nbsp; 
-        <strong>Rank:</strong> <span id="clanRank"></span>&nbsp;/&nbsp;<span id="clanRank2"></span>
+        <strong>My Points:</strong> <span id="userPoints"></span>&nbsp;&nbsp;&nbsp;
+        <strong>Rank:</strong> <span id="userPosition" class="tooltip" data-text="Jak si stojíš v klanu..."></span>&nbsp;/&nbsp;<span id="userPointsAll" class="tooltip" data-text="Jak si stojíš celkově za VLP i VLP2..."></span>
+        <span><img class="logo-clanwars" src="./icon-clanvars.png" width="25" height="25"></span>
+        <strong>Clan Points:</strong> <span id="clanPoints"></span>&nbsp;&nbsp;
+        <strong>Rank:</strong> <span id="clanRank" class="tooltip left" data-text="Pozice VLP klanu v CW"></span>&nbsp;/&nbsp;<span id="clanRank2" class="tooltip left" data-text="Pozice VLP2 klanu v CW"></span>
       </p>
-      <p><strong>Aktualizováno:</strong> <span id="lastUpdated"></span></p>
+      <p><strong>Last update:</strong> <span id="lastUpdated"></span><span id="alertMsg"></span></p>
       <table>
         <thead>
           <tr>
